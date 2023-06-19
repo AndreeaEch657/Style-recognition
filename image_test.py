@@ -1,12 +1,12 @@
 import logging
 from ludwig.api import LudwigModel
-from ludwig.visualize import confusion_matrix
+#from ludwig.visualize import confusion_matrix
 from pandas import read_csv
 import pandas as pd
 
-train_df_1 = read_csv("impressionism2.csv")
-train_df_2 = read_csv("post_impressionism2.csv")
-train_df_3 = read_csv("northern_renaissance2.csv")
+train_df_1 = read_csv("impressionism.csv")
+train_df_2 = read_csv("post-impressionism.csv")
+train_df_3 = read_csv("northern-renaissance.csv")
 
 
 labels = ["Impressionism", "Post_Impressionism", "Northern_Renaissance"]

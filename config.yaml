@@ -1,0 +1,35 @@
+input_features:
+- name: image_path
+  type: image
+  encoder:
+    type: efficientnet
+    use_pretrained: true
+    trainable: true
+    model_cache_dir: null
+    model_variant: b0
+  preprocessing:
+    sample_ratio: 1.0
+    oversample_minority: null
+    undersample_majority: null
+    split:
+        type: random
+        probabilities:
+        - 0.7
+        - 0.1
+        - 0.2
+
+output_features:
+ - name: label
+   type: category
+
+trainer:
+  epochs: 50
+
+optimizer:
+    type: adam
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    weight_decay: 0.0
+    amsgrad: false  
