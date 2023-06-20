@@ -1,6 +1,5 @@
 import logging
 from ludwig.api import LudwigModel
-#from ludwig.visualize import confusion_matrix
 from pandas import read_csv
 import pandas as pd
 
@@ -22,21 +21,13 @@ for style in labels:
     temp.remove(style)
     train_df_1 = train_df[style]
     train_df_2 = train_df[temp[0]]
-    #train_df_2 = train_df[style].replace(temp[0], "Other")
     train_df_3 = train_df[temp[1]]
-    #train_df_3 = train_df[style].replace(temp[1], "Other")
     min_images = 352
     train_df_1 = train_df_1.sample(n = min_images)
     train_df_2, train_df_3 = train_df_2.sample(n = int(min_images/2)), train_df_3.sample(n = int(min_images/2))
     dataframes = [train_df_1, train_df_2, train_df_3]
     train_df_2 = dataframes[1].replace(temp[0], "Other")
     train_df_3 = dataframes[2].replace(temp[1], "Other")
-    
-    #print(train_df_1.head())
-    #print("---------------------------u2-------------------------------------")
-    #print(train_df_2.head())
-    #print("---------------------------u3-------------------------------------")
-    #print(train_df_3.head())
     
     result = pd.concat([train_df_1, train_df_2, train_df_3])
 

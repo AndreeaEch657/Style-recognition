@@ -1,0 +1,41 @@
+<!doctype html>
+    <html>
+    <head>
+    <link rel="stylesheet" href="staticFiles\styles.css">
+    </head>
+    <title>Upload new File</title>
+    <body>
+    <header>
+    <h1>Upload new File</h1>
+    </header>
+    </body>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    <h1>Impressionism</h1>
+    {% if impressionism_percentage %}
+    <h2>Probability: {{ impressionism_percentage }}</h2>
+    {% else %}
+    <h2>Upload an image</h2>
+    {% endif %}
+    <h1>Post Impressionism</h1>
+    {% if postimpressionism_percentage %}
+    <h2>Probability: {{ postimpressionism_percentage }}</h2>
+    {% else %}
+    <h2>Upload an image</h2>
+    {% endif %}
+    <h1>Northern Renaissance</h1>
+    {% if renaissance_percentage %}
+    <h2>Probability: {{ renaissance_percentage }}</h2>
+    {% else %}
+    <h2>Upload an image</h2>
+    {% endif %}
+    <h1>This picture most likely is</h1>
+    {% if predicted_genre %}
+    <h2>{{ predicted_genre }}</h2>
+    {% else %}
+    <h2>Upload an image</h2>
+    {% endif %}
+    </html>
+    

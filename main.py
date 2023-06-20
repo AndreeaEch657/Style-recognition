@@ -1,14 +1,14 @@
 import csv
 import hashlib
-from flask import Flask, flash, redirect,request
-from pandas import read_csv
+from flask import Flask, flash, request, render_template
+#from pandas import read_csv
 from ludwig.api import LudwigModel
 import os
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import json
 
-app = Flask(__name__, '/prediction')
+app = Flask(__name__, template_folder='templateFiles', static_folder='staticFiles')
 
 ludwig_model_1 = LudwigModel.load("results\\Impressionism_run\\model")
 ludwig_model_2 = LudwigModel.load("results\\Post_Impressionism_run\\model")
@@ -24,7 +24,7 @@ def replaceCsv(filehash):
         row['image_path'] = filehash + '.jpg'
 
     with open("uploads\\upload.csv", 'w', newline='') as file:
-        fieldnames = ['image_path', 'label', 'split']
+        fieldnames = ['image_path', 'label']
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(data)
@@ -65,35 +65,30 @@ def prediction():
             prediction2, _ = ludwig_model_2.predict(dataset=file_path)
             prediction3, _ = ludwig_model_3.predict(dataset=file_path)
             predictions_array = []
-            predictions_array.append(json.loads(prediction1.to_json())['label_probability']['0'])
-            predictions_array.append(json.loads(prediction2.to_json())['label_probability']['0'])
-            predictions_array.append(json.loads(prediction3.to_json())['label_probability']['0'])
+            predictions_array.append(json.loads(prediction1.to_json())['label_probabilities_impressionism']['0'])
+            predictions_array.append(json.loads(prediction2.to_json())['label_probabilities_post-impressionism']['0'])
+            predictions_array.append(json.loads(prediction3.to_json())['label_probabilities_northern-renaissance']['0'])
             index = predictions_array.index(max(predictions_array))
             if index == 0:
-                return {"response":f'Impressionism{prediction1.to_json()}'}
+                imp_perc = json.loads(prediction1.to_json())['label_probabilities_impressionism']['0']
+                postimp_perc = json.loads(prediction1.to_json())['label_probabilities_post-impressionism']['0']
+                ren_perc = json.loads(prediction1.to_json())['label_probabilities_northern-renaissance']['0']
+                genre = "Impressionism"
+                return render_template('index.html',impressionism_percentage=format(imp_perc,'.7f'),postimpressionism_percentage=format(postimp_perc,'.7f'),renaissance_percentage=format(ren_perc,'.7f'),predicted_genre=genre)
             if index == 1:
-                return {"response":f'Post-Impressionism{prediction2.to_json()}'}
+                imp_perc = json.loads(prediction2.to_json())['label_probabilities_impressionism']['0']
+                postimp_perc = json.loads(prediction2.to_json())['label_probabilities_post-impressionism']['0']
+                ren_perc = json.loads(prediction2.to_json())['label_probabilities_northern-renaissance']['0']
+                genre = "Post-Impressionism"
+                return render_template('index.html',impressionism_percentage=format(imp_perc,'.7f'),postimpressionism_percentage=format(postimp_perc,'.7f'),renaissance_percentage=format(ren_perc,'.7f'),predicted_genre=genre)
             if index == 2:
-                return {"response":f'Northern-Renaissance{prediction3.to_json()}'}
+                imp_perc = json.loads(prediction3.to_json())['label_probabilities_impressionism']['0']
+                postimp_perc = json.loads(prediction3.to_json())['label_probabilities_post-impressionism']['0']
+                ren_perc = json.loads(prediction3.to_json())['label_probabilities_northern-renaissance']['0']
+                genre = "Northern-Renaissance"
+                return render_template('index.html',impressionism_percentage=format(imp_perc,'.7f'),postimpressionism_percentage=format(postimp_perc,'.7f'),renaissance_percentage=format(ren_perc,'.7f'),predicted_genre=genre)
 
-    return '''
-    <!doctype html>
-    <html>
-    <head>
-    <link rel="stylesheet" href="prediction\css\styles.css">
-    </head>
-    <title>Upload new File</title>
-    <body>
-    <header>
-    <h1>Upload new File</h1>
-    </header>
-    </body>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    </html>
-    '''
+    return render_template('index.html')
 
 
 
