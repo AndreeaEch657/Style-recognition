@@ -1,10 +1,8 @@
 import csv
 import hashlib
 from flask import Flask, flash, request, render_template
-#from pandas import read_csv
 from ludwig.api import LudwigModel
 import os
-from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import json
 
@@ -54,13 +52,10 @@ def prediction():
             return {"response":"No selected file"}
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            #filehash = hashlib.md5(open(os.path.join(app.config['UPLOAD_FOLDER'], filename),'rb').read()).hexdigest()
             filehash = hashlib.md5(filename.encode("utf-8")).hexdigest()
             replaceCsv(filehash)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filehash + '.jpg'))
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'upload.csv')
-            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filehash + '.jpg'))
             prediction1, _ = ludwig_model_1.predict(dataset=file_path)
             prediction2, _ = ludwig_model_2.predict(dataset=file_path)
             prediction3, _ = ludwig_model_3.predict(dataset=file_path)
